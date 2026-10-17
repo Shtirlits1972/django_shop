@@ -21,6 +21,8 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.views.static import serve
 from django.urls import re_path
+from django.views.generic import TemplateView
+
 
 
 def home(request):
@@ -34,22 +36,27 @@ def home(request):
 
 urlpatterns = [
     # Временная главная страница
-    path('', home, name='home'),
+    ## path('', home, name='home'),
+    # path('', TemplateView.as_view(template_name='index.html'), name='vue-app'),
 
     # Панель администратора Django
     path('admin/', admin.site.urls),
 
     # Маршруты API интернет-магазина
     path('api/', include('api.urls')),
+    path('', TemplateView.as_view(template_name='index.html'), name='vue-app'),
+    re_path(
+    r'^(?!api/|admin/|static/|images/|status/).+$',
+    TemplateView.as_view(template_name='index.html'),
+    name='vue-fallback'),
 ]
 
 
-# Раздача изображений товаров в режиме разработки
-if settings.DEBUG:
-    urlpatterns += [
-        re_path(
-            r'^images/(?P<path>.*)$',
-            serve,
-            {'document_root': settings.BASE_DIR / 'wwwroot' / 'images'}
-        ),
-    ]
+# Раздача изображений товаров
+urlpatterns += [
+    re_path(
+        r'^images/(?P<path>.*)$',
+        serve,
+        {'document_root': settings.BASE_DIR / 'wwwroot' / 'images'}
+    ),
+]

@@ -23,9 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-vcxibow$fn3_$cqv0pp^i_@elnx_i30h4*!5sir2(u4nd0^_&2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+]
 
 
 # Application definition
@@ -53,6 +56,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware', 
@@ -128,9 +132,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend',
+]
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
@@ -179,4 +197,6 @@ CORS_ALLOWED_ORIGINS = [
 
 # Разрешаем браузеру передавать cookie между приложениями.
 CORS_ALLOW_CREDENTIALS = True
+
+TEMPLATES[0]['DIRS'] = [BASE_DIR / 'frontend']
 
