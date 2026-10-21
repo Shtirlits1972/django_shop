@@ -2,8 +2,21 @@
 
 from django.urls import path
 from . import views
+from drf_spectacular.views import (
+    SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView,
+)
+from .authentication import CookieJWTAuthentication
+from .documentation import IsShopAdmin
+
+documentation_access = {
+    'authentication_classes': [CookieJWTAuthentication],
+    'permission_classes': [IsShopAdmin],
+}
 
 urlpatterns = [
+    path('schema/', SpectacularAPIView.as_view(**documentation_access), name='schema'),
+    path('docs/', SpectacularSwaggerView.as_view(url_name='schema', **documentation_access), name='swagger-ui'),
+    path('redoc/', SpectacularRedocView.as_view(url_name='schema', **documentation_access), name='redoc'),
     # Проверка работоспособности API
     path('status/', views.api_status, name='api-status'),
 

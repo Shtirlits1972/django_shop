@@ -1,6 +1,8 @@
 
 import token
 
+from .schema import documented
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -26,6 +28,7 @@ from uuid import uuid4
 from django.utils import timezone
 from api.models import OrderHead, OrderDetail, OrderHeadView
 
+@documented('api_status')
 @api_view(['GET'])
 def api_status(request):
     """Возвращает статус API интернет-магазина."""
@@ -35,6 +38,7 @@ def api_status(request):
     })
 
 
+@documented('register')
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
@@ -96,6 +100,7 @@ def register(request):
     return response
 
 
+@documented('login')
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
@@ -159,6 +164,7 @@ def login(request):
     return response
 
 
+@documented('me')
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def me(request):
@@ -173,6 +179,7 @@ def me(request):
     })
 
 
+@documented('logout')
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout(request):
@@ -191,6 +198,7 @@ def logout(request):
     return response
 
 
+@documented('users_list')
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def users_list(request):
@@ -246,6 +254,7 @@ def user_create(request):
 # Управление пользователями — аналог UsersController
 # --------------------------------------------------
 
+@documented('users_list')
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def users_list(request):
@@ -302,6 +311,7 @@ def users_list(request):
     )
 
 
+@documented('user_detail')
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def user_detail(request, user_id):
@@ -405,6 +415,7 @@ def user_detail(request, user_id):
         })
 
 # GET, POST, PUT /api/Category
+@documented('category_list')
 @api_view(['GET', 'POST', 'PUT'])
 @permission_classes([IsAuthenticated])
 def category_list(request):
@@ -453,6 +464,7 @@ def category_list(request):
 
 
 # GET, DELETE /api/Category/{id}
+@documented('category_detail')
 @api_view(['GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def category_detail(request, category_id):
@@ -474,6 +486,7 @@ def category_detail(request, category_id):
         return Response(status=200)
     
 # GET, POST, PUT /api/Product
+@documented('product_list')
 @api_view(['GET', 'POST', 'PUT'])
 @permission_classes([IsAuthenticated])
 def product_list(request):
@@ -515,6 +528,7 @@ def product_list(request):
 
 
 # GET, DELETE /api/Product/{id}
+@documented('product_detail')
 @api_view(['GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def product_detail(request, product_id):
@@ -552,6 +566,7 @@ def product_detail(request, product_id):
             return Response(status=200)
     
 
+@documented('product_delete_image')
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def product_delete_image(request):
@@ -583,6 +598,7 @@ def product_delete_image(request):
     return Response("Success on DeleteImage")
 
 
+@documented('product_load_image')
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def product_load_image(request):
@@ -658,6 +674,7 @@ def get_new_order_number():
     return f"{today.day}.{today.month}.{today.year}/{order_count + 1}"
 
 
+@documented('order_head_detail')
 @api_view(['GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def order_head_detail(request, order_id):
@@ -730,6 +747,7 @@ def parse_order_date(value):
     return dt.date()
 
 
+@documented('order_head_list')
 @api_view(['GET', 'POST', 'PUT'])
 @permission_classes([IsAuthenticated])
 def order_head_list(request):
@@ -993,6 +1011,7 @@ def order_detail_update(request):
     return Response(status=200)
 
 
+@documented('order_detail_save')
 @api_view(['GET', 'POST', 'PUT'])
 @permission_classes([IsAuthenticated])
 def order_detail_save(request):
@@ -1030,6 +1049,7 @@ def order_detail_delete(request, order_id):
     return Response(status=200)
 
 
+@documented('order_detail_by_id')
 @api_view(['GET', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def order_detail_by_id(request, order_id):

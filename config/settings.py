@@ -46,6 +46,8 @@ INSTALLED_APPS = [
 
      # Django REST Framework — создание REST API
     'rest_framework',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 
     # Поддержка CORS — доступ к API с другого источника
     'corsheaders',
@@ -184,6 +186,7 @@ MAILERS = {
 
 # Настройки Django REST Framework
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     # Пока оставляем доступ открытым по умолчанию.
     # Для защищённых маршрутов будем явно требовать авторизацию.
     'DEFAULT_PERMISSION_CLASSES': [
@@ -195,6 +198,25 @@ REST_FRAMEWORK = {
         'api.authentication.CookieJWTAuthentication',
     ],
     'UNICODE_JSON': True,
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Django Shop API',
+    'DESCRIPTION': (
+        'REST API интернет-магазина: пользователи, товары, категории и заказы. '
+        'Для Authorize введите JWT без префикса Bearer. Также поддерживается '
+        'cookie auth_token, устанавливаемая при входе. Документация доступна '
+        'только пользователям с ролью admin.'
+    ),
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SERVE_PERMISSIONS': ['api.documentation.IsShopAdmin'],
+    'SERVE_AUTHENTICATION': ['api.authentication.CookieJWTAuthentication'],
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_SETTINGS': {'deepLinking': True, 'persistAuthorization': False},
 }
 
 from datetime import timedelta

@@ -56,7 +56,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
-    def get_password(self, obj):
+    def get_password(self, obj) -> str:
         # Никогда не передаём клиенту пароль или его хеш.
         return PASSWORD_MASK
 
