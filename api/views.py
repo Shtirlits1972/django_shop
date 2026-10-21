@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import request, status
 from rest_framework_simplejwt.tokens import AccessToken
-from datetime import date, timedelta, datetime
-from .models import User, ImpersonationLog
+from datetime import date, datetime
+from .models import User
 from .models import Category
 from .serializers import CategorySerializer
 from .serializers import (
@@ -403,56 +403,6 @@ def user_detail(request, user_id):
         return Response({
             'message': 'Пользователь успешно удален',
         })
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def impersonate(request, user_id):
-    # Только администратор может входить от имени другого пользователя.
-    if request.user.role != 'admin' or request.auth.get('impersonator_id') is not None:
-        return Response(
-            {'message': 'Недостаточно прав для выполнения операции'},
-            status=status.HTTP_403_FORBIDDEN
-        )
-
-    # Находим пользователя, от имени которого нужно войти.
-    user = User.objects.filter(pk=user_id).first()
-
-    if user is None:
-        return Response(
-            {'message': 'Пользователь не найден'},
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-    # Запрещаем вход от имени заблокированного пользователя.
-    if not user.is_active or not user.is_appruved:
-        return Response(
-            {'message': 'Пользователь не активирован'},
-            status=status.HTTP_403_FORBIDDEN
-        )
-
-    # Создаём JWT от имени выбранного пользователя.
-    token = AccessToken.for_user(user)
-    # Токен имперсонации действует только 15 минут.
-    token.set_exp(lifetime=timedelta(minutes=15))
-
-    # Сохраняем данные выбранного пользователя для совместимости с Vue.
-    token['id'] = user.pk
-    token['email'] = user.email
-    token['role'] = user.role
-    token['name'] = user.users_name
-    token['displayName'] = user.users_name
-
-    # Запоминаем, какой администратор инициировал переключение.
-    token['impersonator_id'] = request.user.pk
-    
-    # Записываем факт переключения в журнал.
-    ImpersonationLog.objects.create(
-        admin=request.user,
-        target_user=user
-    )
-
-    return Response(str(token), status=status.HTTP_200_OK)
-
 
 # GET, POST, PUT /api/Category
 @api_view(['GET', 'POST', 'PUT'])

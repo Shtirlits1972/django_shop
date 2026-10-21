@@ -23,7 +23,6 @@ urlpatterns = [
 
     # Получение отдельного пользователя
     path('Users/<int:user_id>', views.user_detail, name='api-user-detail'),
-    path('Auth/impersonate/<int:user_id>', views.impersonate, name='api-impersonate'),
     
     # Категории товаров
     path('Category', views.category_list, name='category-list'),

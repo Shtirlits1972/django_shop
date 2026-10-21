@@ -67,7 +67,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', 
-    'api.middleware.ImpersonationAuditMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -193,7 +192,7 @@ REST_FRAMEWORK = {
 
     # Проверяем JWT из заголовка Authorization: Bearer <токен>
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'api.authentication.AuditJWTAuthentication',
+        'api.authentication.CookieJWTAuthentication',
     ],
     'UNICODE_JSON': True,
 }

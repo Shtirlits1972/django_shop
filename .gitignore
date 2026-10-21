@@ -179,3 +179,8 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+# Local database backups
+*.sqlite3.backup
+
+# VS Code settings
+.vscode/

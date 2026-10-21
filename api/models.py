@@ -61,65 +61,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     
 
-class ImpersonationLog(models.Model):
-    # Администратор, инициировавший переключение
-    admin = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='impersonation_logs_as_admin'
-    )
-
-    # Пользователь, от имени которого выполнен вход
-    target_user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='impersonation_logs_as_target'
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f'{self.admin} -> {self.target_user} ({self.created_at})'
-    
-    
-class ImpersonationActionLog(models.Model):
-    # Администратор, от имени которого выполняется действие
-    admin = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='impersonation_actions_as_admin'
-    )
-
-    # Пользователь, под которым работает администратор
-    target_user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='impersonation_actions_as_target'
-    )
-
-    # Информация об HTTP-запросе
-    method = models.CharField(max_length=10)
-    path = models.CharField(max_length=500)
-    # HTTP-код ответа сервера.
-    status_code = models.PositiveSmallIntegerField(
-        null=True,
-        blank=True
-    )
-
-    # Время выполнения действия
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-created_at']
-        
-        
 class Category(models.Model):
     # Наименование категории
     category_name = models.CharField(max_length=250)
